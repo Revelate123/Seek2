@@ -1,0 +1,13 @@
+input {
+    border-radius: 5px;
+    font-size:25px;
+    border-color: white;
+    box-shadow: 0px 0px 0px 0px white;
+    background-color: white;
+    padding-inline: 0px;
+    border-style: solid;
+} 
+
+form {
+    text-align: center;
+}
