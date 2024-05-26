@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import App from '../App';
 import JobSearch from '../job_search';
+import '../output.css';
+import Logo from './seek_logo.png';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -19,7 +21,7 @@ function CustomTabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 0 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -49,23 +51,25 @@ export default function BasicTabs() {
 
   return (
     <Box sx={{ width: '100%'}}>
-      <Box display="flex"
+      <div class="">
+      <Box  display="flex"
     justifyContent="center"
     alignItems="center"
-     sx={{ borderBottom: 1, borderColor: 'divider' }}>
+     sx={{borderBottom: 0, borderColor: 'divider' }}>
+      <img class="" width='100px' src={Logo} alt="seek logo"/>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-            
-          <Tab label="Job Search "/>
+          <Tab sx={{ typography: 'body1'}} label="Job Search "/>
           <Tab label="Profile"  />
           <Tab label="Career advice" />
           <Tab label="Explore companies"/>
         </Tabs>
       </Box>
+      </div>
       <CustomTabPanel value={value} index={0}>
         <JobSearch/>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        Set up Profile
+        <button class="bg-sky-500 rounded-2xl">Hello</button>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         Career advice
