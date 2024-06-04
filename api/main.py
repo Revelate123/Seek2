@@ -7,6 +7,7 @@ import json
 import pymongo
 import requests
 from flask import Flask
+import re
 
 async def fetch(session, url):
     async with session.get(url) as response:
@@ -88,7 +89,3 @@ def start_scrape_job_ids(keywords, classification):
         time.sleep(5)
     return job_ids[0]
 
-
-output = requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true&keywords="+ "software" + "&classification=6281&page=1")
-
-print(output)
