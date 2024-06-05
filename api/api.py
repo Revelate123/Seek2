@@ -38,7 +38,12 @@ def get_job_page():
         classification = "&classification=" + str(categories[classification])
     else:
         classification = ""
-    return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true&keywords="+ keywords + classification+"&page=1").text)
+    location = request.json["location"]
+    if location:
+        location = "&where=" + str(request.json["location"]).replace(" ","+")
+    else:
+        location =""
+    return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true&keywords=" + keywords + location + classification+"&page=1").text)
 
 
 
@@ -68,6 +73,18 @@ def get_current_jobs():
         answers[i] = collection.count_documents(query)
     answers["total"] = len(job_ids)
     return answers
+
+
+@app.route('/detailed_job', methods = ['POST'])
+def get_detailed_job():
+    job_id = request.json['job_id']
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    db = client["mydatabase"]
+    collection = db["jobsummary"]
+
+    #query db for that job
+
+    return job
 
 
 

@@ -5,12 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import BasicTabs from './components/tab';
 import Box from '@mui/material/Box';
+import Tabs from './components/simpleTab';
+import JobSearch from './job_search';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Box height={20}></Box>
-    <BasicTabs/>    
+    <Tabs/> 
   </React.StrictMode>
 );
 

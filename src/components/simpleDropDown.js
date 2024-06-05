@@ -46,7 +46,7 @@ export default function SimpleListMenu ({selectedIndex, setSelectedIndex, option
     };
 
     var listItems = options.map((option, index) => 
-        <li class=""onClick={(event) => handleMenuItemClick(event, index)}>{option}
+        <li class="ml-3"onClick={(event) => handleMenuItemClick(event, index)}>{option}
             </li>
     );
 
