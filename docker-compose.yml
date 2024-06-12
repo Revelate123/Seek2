@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: ./
-      dockerfile: frontend.dockerfile
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
     links:
@@ -13,7 +13,7 @@ services:
   flask:
     build:
       context: ./api
-      dockerfile: backend.dockerfile
+      dockerfile: Dockerfile
     ports:
       - 5000:5000
     container_name: 'flask'
