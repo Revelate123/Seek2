@@ -10,4 +10,10 @@ Dockerfile.prod
 ./api/venv/
 ./api/__pycache__/
 ./api/gitignore
-./api/Dockerfile
+./api/Dockerfile# Elastic Beanstalk Files
+.elasticbeanstalk/*
+.git
+.gitignore# Elastic Beanstalk Files
+.elasticbeanstalk/*
+.git
+.gitignore
