@@ -1,0 +1,31 @@
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: frontend.dockerfile
+    ports:
+      - 3000:3000
+    links:
+      - flask
+
+
+
+  flask:
+    build:
+      context: ./api
+      dockerfile: backend.dockerfile
+    ports:
+      - 5000:5000
+    container_name: 'flask'
+    
+
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata6:/data/db
+    container_name: 'mongodb'
+   
+volumes:
+  dbdata6:

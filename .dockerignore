@@ -1,0 +1,13 @@
+node_modules
+build
+.dockerignore
+Dockerfile
+Dockerfile.prod
+
+./api/idea/
+./api/vscode/
+./api/git/
+./api/venv/
+./api/__pycache__/
+./api/gitignore
+./api/Dockerfile

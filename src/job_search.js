@@ -5,6 +5,9 @@ import Icon from './options.js';
 import Box from '@mui/material/Box';
 import Logo from './components/seek_logo.png';
 import SimpleListMenu from './components/simpleDropDown.js';
+import parse from 'html-react-parser';
+import DOMPurify from 'dompurify';
+
 
 function SearchBanner({setJobs, setInsights}) {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -134,27 +137,78 @@ function SearchBanner({setJobs, setInsights}) {
     );
 }
 
-function DetailedJobCard({detailedJobCard}) {
-    if (detailedJobCard) {
-        /*display the job*/
+function DetailedJobCard({detailedJob}) {
+    
 
-    return (
+    if (detailedJob) {
+        if (detailedJob.data.branding) {
+            Logo = detailedJob.data.branding.assets.logo.strategies.jdpLogo
+        } else {
+            Logo = ""
+        };
 
-        <div class="flex flex-col h-1/2 p-4 w-full rounded-lg bg-white ring-2 ring-grey hover:ring-2 hover:ring-seekblue focus:ring-8 focus:ring-[#7facf5] hover:cursor-pointer">
-                Hello
+        const htmlFrom = (htmlString) => {
+            const cleanHtmlString = DOMPurify.sanitize(htmlString,
+              { USE_PROFILES: { html: true } });
+            const html = parse(cleanHtmlString);
+            return html;
+    }
 
-        </div>
-    );
-    };
+        return (
+            <div class="w-full ml-5 mr-5">
+                <div class="hidden md:block h-screen overflow-auto sticky top-0 right-0 flex flex-col p-4 w-full rounded-lg bg-white ring-2 ring-grey hover:cursor-pointer">
+                <div class="ml-5 flex flex-col space-y-5">
+                <div>
+                    <img src={Logo} width="140px" class="p-4"/>
+                    <div class="font-bold">{detailedJob.data.title}</div>
+                    <div>{detailedJob.data.advertiser.description}</div>
+                </div>
+                
+                <div>
+                    <div>{detailedJob.data.location}</div>
+                    <div>{detailedJob.data.salary}</div>
+                    
+                </div>
+                
+                <div>{detailedJob.data.teaser}</div>
+            </div>
+                <div>{htmlFrom(detailedJob.data.jobPage)}</div>
+                
+    
+            </div>
+
+            </div>
+            
+        );
+    } else {
+        return (
+            <div class="flex flex-col h-1/2 p-4 w-full rounded-lg bg-white">
+                    
+    
+            </div>
+        );
+    }
 
 }
 
 
 
-function JobCard({job, setDetailedJobCard}) {
+function JobCard({job, setDetailedJob}) {
 
     const handleJobClick = (index) => {
-        setDetailedJobCard(job.id)
+        fetch('/detailed_job',{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    job_id: job.id
+                })
+            }).then(res => res.json()).then(data => {
+                setDetailedJob(data)
+            });   
+       
       };
 
     if (job.branding) {
@@ -194,17 +248,17 @@ function JobCard({job, setDetailedJobCard}) {
 
 
 
-function JobCards({myjobs, setDetailedJobCard}) {
+function JobCards({myjobs, setDetailedJob}) {
     var listItems = null
     if (myjobs) {
         listItems = myjobs.map((job) => 
-            <JobCard job={job} setDetailedJobCard={setDetailedJobCard}/>
+            <JobCard job={job} setDetailedJob={setDetailedJob}/>
         );
     };
 
     if (listItems) return (
         <div class="relative w-full z-0 p-4 md:p-0 md:w-2/3">
-        <ul class= "md:absolute flex flex-col space-y-4">
+        <ul class= " flex flex-col space-y-4">
             {listItems}
 
             </ul>
@@ -240,8 +294,8 @@ function InsightCard({insights}) {
         
     }
     if (insights) {return (
-        <div class = "relative w-full md:w-1/2 -z-10">
-            <ul class="p-5 ml-5 mr-5">
+        <div class = "relative w-full md:w-1/2">
+            <ul class="p-5 ml-5 mr-5 md:h-screen md:overflow-auto sticky top-0">
                 <li class="text-2xl mb-5">We found the following insights!</li>
                 {listItems}
                 </ul>
@@ -259,7 +313,7 @@ function InsightCard({insights}) {
 export default function JobSearch() {
     const [myjobs, setJobs] = useState(null);
     const [insights, setInsights] = useState(null);
-    const [detailedJobCard, setDetailedJobCard] = useState(null);
+    const [detailedJob, setDetailedJob] = useState(null);
     return (
         <div class="z-0">
         
@@ -271,8 +325,8 @@ export default function JobSearch() {
             <Box height={20}></Box>
             <div class = "flex flex-col md:flex md:flex-row">
             <InsightCard insights={insights}/>
-            <JobCards myjobs={myjobs} setDetailedJobCard={setDetailedJobCard}/>
-            <DetailedJobCard detailedJobCard={detailedJobCard}/>
+            <JobCards myjobs={myjobs} setDetailedJob={setDetailedJob}/>
+            <DetailedJobCard detailedJob={detailedJob}/>
             </div>
             
         
