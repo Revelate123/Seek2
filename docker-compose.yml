@@ -1,10 +1,17 @@
 services:
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - 80:80
+
   app:
     build:
       context: ./client
       dockerfile: Dockerfile
-    ports:
-      - 3000:3000
+    #ports:
+      #- 3000:3000
     links:
       - flask
 
@@ -14,8 +21,8 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    ports:
-      - 5000:5000
+    #ports:
+      #- 5000:5000
     container_name: 'flask'
     
 

@@ -48,7 +48,7 @@ function SearchBanner({setJobs, setInsights}) {
             var job_ids;
             e.preventDefault();
 
-            fetch('/job_page',{
+            fetch('/flask/job_page',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -64,7 +64,7 @@ function SearchBanner({setJobs, setInsights}) {
             });  
 
 
-            fetch('/job_ids',{
+            fetch('/flask/job_ids',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -81,7 +81,7 @@ function SearchBanner({setJobs, setInsights}) {
 
                       
 
-            fetch('/job_insights',{
+            fetch('/flask/job_insights',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -196,7 +196,7 @@ function DetailedJobCard({detailedJob}) {
 function JobCard({job, setDetailedJob}) {
 
     const handleJobClick = (index) => {
-        fetch('/detailed_job',{
+        fetch('/flask/detailed_job',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
