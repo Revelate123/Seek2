@@ -24,6 +24,10 @@ def create_app():
     @app.route('/job_ids', methods = ['POST'])
     def get_job_ids():
         keywords = request.json["keywords"]
+        if keywords:
+            keywords = "&keywords=" + keywords
+        else:
+            keywords = ""
         categories = {"Acounting":1200, "Administration & Office":6251, "Advertising, Arts & Media": 6304, "Banking & Financial Services": 1203, "Call Centre & Customer Service": 1204, \
                     "CEO & General Management": 7019, "Community Services & Development": 6163, "Construction":1206, "Consulting & Strategy":6076, "Design & Architecture":6263,\
                         "Education & Training":6123, "Engineering":1209, "Farming, Animals & Construction":6205, "Government & Defence": 1210, "Healthcare & Medical": 1211,\
@@ -41,7 +45,7 @@ def create_app():
             location = "&where=" + str(request.json["location"]).replace(" ","+")
         else:
             location =""
-        job_ids = start_scrape_job_ids("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true&keywords=" + keywords + location + classification+"&page=")
+        job_ids = start_scrape_job_ids("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true" + keywords + location + classification+"&page=")
         return job_ids
 
 
@@ -52,6 +56,10 @@ def create_app():
     @app.route('/job_page', methods = ['POST'])
     def get_job_page():
         keywords = request.json["keywords"]
+        if keywords:
+            keywords = "&keywords=" + keywords
+        else:
+            keywords = ""
         categories = {"Acounting":1200, "Administration & Office":6251, "Advertising, Arts & Media": 6304, "Banking & Financial Services": 1203, "Call Centre & Customer Service": 1204, \
                     "CEO & General Management": 7019, "Community Services & Development": 6163, "Construction":1206, "Consulting & Strategy":6076, "Design & Architecture":6263,\
                         "Education & Training":6123, "Engineering":1209, "Farming, Animals & Construction":6205, "Government & Defence": 1210, "Healthcare & Medical": 1211,\
@@ -69,7 +77,11 @@ def create_app():
             location = "&where=" + str(request.json["location"]).replace(" ","+")
         else:
             location =""
-        return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true&keywords=" + keywords + location + classification+"&page=1").text)
+        #answers = {}
+        #answers["data"] = [{"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}]
+        #return "test if this worked"
+        #return {"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}
+        return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true" + keywords + location + classification+"&page=1").text)
 
 
 

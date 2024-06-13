@@ -1,26 +1,23 @@
+version: '3'
 services:
   nginx:
-    build:
-      dockerfile: Dockerfile
-      context: ./nginx
+    image: revelate123/seek2-nginx
     ports:
       - 80:80
-
-  app:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    #ports:
-      #- 3000:3000
     links:
       - flask
+      - app
+    container_name: 'nginx'
+
+  app:
+    image: revelate123/seek2-app
+    #ports:
+      #- 3000:3000
 
 
 
   flask:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+    image: revelate123/seek2-flask
     #ports:
       #- 5000:5000
     container_name: 'flask'
