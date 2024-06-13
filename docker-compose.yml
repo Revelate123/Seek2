@@ -10,3 +10,14 @@ services:
   flask:
     image: revelate123/flask
     container_name: flask
+    links:
+      - mongodb
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - 27017:27017
+    volumes:
+      - dbdata6:/data/db
+    container_name: mongodb
+volumes:
+  dbdata6:
