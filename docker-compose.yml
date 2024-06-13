@@ -1,13 +1,12 @@
 version: '3'
 services:
-  nginx:
-    image: revelate123/nginx
-    ports:
-      -80:80
-    links:
-      -app
-    container_name: "nginx"
   app:
     image: revelate123/client
-    container_name: "app"
-
+    ports:
+      - 80:80
+    container_name: app
+    links:
+      - flask
+  flask:
+    image: revelate123/flask
+    container_name: flask
