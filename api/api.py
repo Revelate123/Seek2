@@ -122,7 +122,7 @@ def create_app():
         
         query = collection.find_one({"_id":job_id})
         if not query:
-            start_scrape_urls(job_id)
+            start_scrape_urls([job_id])
         query = collection.find_one({"_id":job_id})
         #query db for that job
 
