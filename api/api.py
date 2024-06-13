@@ -79,7 +79,7 @@ def create_app():
             location =""
         #answers = {}
         #answers["data"] = [{"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}]
-        return "test if this worked"
+        #return "test if this worked"
         #return {"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}
         return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true" + keywords + location + classification+"&page=1").text)
 
@@ -119,9 +119,11 @@ def create_app():
         client = pymongo.MongoClient("mongodb://mongodb:27017/")
         db = client["mydatabase"]
         collection = db["jobsummary"]
-
+        
         query = collection.find_one({"_id":job_id})
-
+        if not query:
+            start_scrape_urls(job_id)
+        query = collection.find_one({"_id":job_id})
         #query db for that job
 
         return {"data":query}

@@ -1,7 +1,7 @@
 version: '3'
 services:
   app:
-    image: revelate123/client
+    image: revelate123/app
     ports:
       - 80:80
     container_name: app

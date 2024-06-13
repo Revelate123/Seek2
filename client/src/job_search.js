@@ -61,6 +61,7 @@ function SearchBanner({setJobs, setInsights}) {
                 })
             }).then(res => res.json()).then(data => {
                 console.log(setJobs(data.data))
+
             });  
 
 
@@ -139,13 +140,12 @@ function SearchBanner({setJobs, setInsights}) {
 
 function DetailedJobCard({detailedJob}) {
     
-
+    
     if (detailedJob) {
+        var Logo = null;
         if (detailedJob.data.branding) {
-            Logo = detailedJob.data.branding.assets.logo.strategies.jdpLogo
-        } else {
-            Logo = ""
-        };
+            Logo =  <img src={detailedJob.data.branding.assets.logo.strategies.jdpLogo} width="140px" class="p-4"/>
+        } 
 
         const htmlFrom = (htmlString) => {
             const cleanHtmlString = DOMPurify.sanitize(htmlString,
@@ -159,7 +159,7 @@ function DetailedJobCard({detailedJob}) {
                 <div class="hidden md:block h-screen overflow-auto sticky top-0 right-0 flex flex-col p-4 w-full rounded-lg bg-white ring-2 ring-grey hover:cursor-pointer">
                 <div class="ml-5 flex flex-col space-y-5">
                 <div>
-                    <img src={Logo} width="140px" class="p-4"/>
+                    <div>{Logo}</div>
                     <div class="font-bold">{detailedJob.data.title}</div>
                     <div>{detailedJob.data.advertiser.description}</div>
                 </div>
@@ -210,11 +210,10 @@ function JobCard({job, setDetailedJob}) {
             });   
        
       };
-
+    var Logo = null
     if (job.branding) {
-        Logo = job.branding.assets.logo.strategies.jdpLogo
-    } else {
-        Logo = ""
+        Logo =  <img src={job.branding.assets.logo.strategies.jdpLogo} width="140px" class="p-4"/>
+        
     };
     if (job.bulletPoints){
         var bulletItems = job.bulletPoints.map((bullet) =>
@@ -227,7 +226,7 @@ function JobCard({job, setDetailedJob}) {
         <div class="flex flex-col h-1/2 p-4 rounded-lg bg-white ring-2 ring-grey hover:ring-2 hover:ring-seekblue focus:ring-8 focus:ring-[#7facf5] hover:cursor-pointer" onClick={handleJobClick}>
             <div class="ml-5 flex flex-col space-y-5">
                 <div>
-                    <img src={Logo} width="140px" class="p-4"/>
+                    <div>{Logo}</div>
                     <div class="font-bold">{job.title}</div>
                     <div>{job.advertiser.description}</div>
                 </div>
