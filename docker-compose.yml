@@ -1,6 +1,13 @@
 version: '3'
 services:
+  nginx:
+    image: revelate123/seek2-nginx
+    ports:
+      -80:80
+    links:
+      -app
+    container_name: "nginx"
   app:
     image: revelate123/client
-    ports:
-      - 80:80
+    container_name: "app"
+
