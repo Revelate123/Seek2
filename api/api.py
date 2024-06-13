@@ -79,7 +79,7 @@ def create_app():
             location =""
         #answers = {}
         #answers["data"] = [{"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}]
-        #return "test if this worked"
+        return "test if this worked"
         #return {"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}
         return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true" + keywords + location + classification+"&page=1").text)
 
