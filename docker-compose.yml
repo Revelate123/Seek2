@@ -1,7 +1,7 @@
 version: '3'
 services:
   nginx:
-    image: revelate123/seek2-nginx
+    image: revelate123/nginx
     ports:
       -80:80
     links:
