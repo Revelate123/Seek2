@@ -1,0 +1,66 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./client
+          platforms: linux/amd64,linux/arm64
+          push: true
+          target: final
+          tags: ${{ secrets.DOCKER_USERNAME }}/client:latest
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api
+          platforms: linux/amd64,linux/arm64
+          push: true
+          target: final
+          tags: ${{ secrets.DOCKER_USERNAME }}/flask:latest
+      -
+        name: Generate deployment package
+        run: zip -r deploy.zip ./dockercompose -x '*.git*'
+      - 
+        name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v22
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: seek2
+          environment_name: seek2-seek2
+          version_label: 12345
+          region: ap-southeast-2
+          deployment_package: deploy.zip
+
+
+
+
+
+        
+          
