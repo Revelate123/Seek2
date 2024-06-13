@@ -1,35 +1,6 @@
 version: '3'
 services:
-  nginx:
-    image: revelate123/seek2-nginx
-    ports:
-      - 80:80
-    links:
-      - flask
-      - app
-    container_name: 'nginx'
-
   app:
     image: revelate123/seek2-app
-    #ports:
-      #- 3000:3000
-
-
-
-  flask:
-    image: revelate123/seek2-flask
-    #ports:
-      #- 5000:5000
-    container_name: 'flask'
-    
-
-  mongodb:
-    image: mongo:6-jammy
     ports:
-      - '27017:27017'
-    volumes:
-      - dbdata6:/data/db
-    container_name: 'mongodb'
-   
-volumes:
-  dbdata6:
+      - 80:80
