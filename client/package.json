@@ -42,7 +42,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://flask:5000",
+  "proxy": "http://nginx:80",
   "devDependencies": {
     "tailwindcss": "^3.4.3"
   }

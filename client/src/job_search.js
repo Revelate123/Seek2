@@ -60,7 +60,7 @@ function SearchBanner({setJobs, setInsights}) {
                     location: e.target.location.value,
                 })
             }).then(res => res.json()).then(data => {
-                setJobs(data.data)
+                console.log(setJobs(data.data))
             });  
 
 

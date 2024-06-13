@@ -1,5 +1,5 @@
 # pull official base image
-FROM node:20.14-alpine
+FROM node:20.14-alpine as build
 
 # set working directory
 WORKDIR /app
@@ -14,10 +14,11 @@ COPY package-lock.json ./
 RUN npm install --silent
 RUN npm install react-scripts@3.4.1 -g --silent
 
-# add app
-COPY . /app
+COPY . .
 
+RUN npm run build
+
+FROM nginx
 EXPOSE 3000
-
-# start app
-CMD ["npm", "start"]
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/build /usr/share/nginx/html
