@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import BasicTabs from './components/tab';
 import Box from '@mui/material/Box';
 import Tabs from './components/simpleTab';
 import JobSearch from './job_search';

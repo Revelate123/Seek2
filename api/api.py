@@ -18,6 +18,8 @@ import re
 import logging
 
 def create_app():
+    MONGO = "localhost"
+
 
     app = Flask(__name__)
 
@@ -83,13 +85,22 @@ def create_app():
         #return {"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}
         return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true" + keywords + location + classification+"&page=1").text)
 
+    @app.route('/select_insight_jobs', methods = ["POST"])
+    def select_insight_jobs():
+        request.json['job_ids']
+        client = pymongo.MongoClient("mongodb://"+ MONGO +":27017/")
+        db = client["mydatabase"]
+        collection = db["jobsummary"]
+
+
 
 
 
     @app.route('/job_insights', methods = ['POST'])
     def get_current_jobs():
         job_ids = request.json['job_ids']
-        client = pymongo.MongoClient("mongodb://mongodb:27017/")
+        parameters = request.json['parameters']
+        client = pymongo.MongoClient("mongodb://"+ MONGO +":27017/")
         db = client["mydatabase"]
         collection = db["jobsummary"]
 
@@ -105,10 +116,16 @@ def create_app():
 
         #TODO: query db and return as json the fields required.
         answers = {}
-        for i in ["python","java",r"\bNet\b","junior", "grad", "entry", r"C\+\+", "C#","javascript",r"\bC\b", "AWS"]:
+        #for i in ["python","java",r"\bNet\b","junior", "grad", "entry", r"C\+\+", "C#","javascript",r"\bC\b", "AWS"]:
+        for i in parameters:
             pattern = re.compile(i,re.IGNORECASE)
             query = {"$and":[{"jobAdDetails":{"$regex":pattern}},{"_id": {"$in": job_ids}}]}
-            answers[i] = collection.count_documents(query)
+            temp = collection.find(query)
+            temp_job_ids = []
+            for x in temp:
+                temp_job_ids += [x]
+        
+            answers[i] = [collection.count_documents(query),temp_job_ids]
         answers["total"] = len(job_ids)
         return answers
 
@@ -116,7 +133,7 @@ def create_app():
     @app.route('/detailed_job', methods = ['POST'])
     def get_detailed_job():
         job_id = request.json['job_id']
-        client = pymongo.MongoClient("mongodb://mongodb:27017/")
+        client = pymongo.MongoClient("mongodb://"+ MONGO +":27017/")
         db = client["mydatabase"]
         collection = db["jobsummary"]
         
@@ -125,13 +142,14 @@ def create_app():
             start_scrape_urls([job_id])
         query = collection.find_one({"_id":job_id})
 
+
         return {"data":query}
 
 
 
     async def fetch(session, url):
         async with session.get(url) as response:
-            app.logger.info("Response Status:",response.status)
+            app.logger.info("Response Status:" + str(response.status))
             return await response.text()
 
 
@@ -153,7 +171,7 @@ def create_app():
 
         jobAdDetails = jobAdDetails.text
 
-        client = pymongo.MongoClient("mongodb://mongodb:27017/")
+        client = pymongo.MongoClient("mongodb://"+ MONGO +":27017/")
         db = client["mydatabase"]
         collection = db["jobsummary"]
         query = {"_id": job_ids}
@@ -161,12 +179,12 @@ def create_app():
         try:
             collection.update_one(query, newValues)
         except:
-            app.logger.warning("Failed to find jobAdDetails for:",job_ids)
+            app.logger.warning("Failed to find jobAdDetails for:" + str(job_ids))
         newValues = {"$set":{"jobPage":jobPage}}
         try:
             collection.update_one(query, newValues)
         except:
-            app.logger.warning("Failed to find jobPage for:",job_ids)
+            app.logger.warning("Failed to find jobPage for:" + str(job_ids))
 
 
     
@@ -190,7 +208,7 @@ def create_app():
         myDict = json.loads(html)
         for i in range(len(myDict["data"])):
             myDict['data'][i]['_id'] = myDict['data'][i]["id"]
-        client = pymongo.MongoClient("mongodb://mongodb:27017/")
+        client = pymongo.MongoClient("mongodb://"+ MONGO +":27017/")
         db = client["mydatabase"]
         collection = db["jobsummary"]
         try:
@@ -233,7 +251,7 @@ def create_app():
         return job_ids[0]
 
 
-    #app.run(debug=True)
+    app.run(debug=True)
     return app
 
 your_app = create_app()

@@ -2,6 +2,7 @@ import * as React from 'react';
 import JobSearch from '../job_search';
 import '../output.css';
 import Logo from './seek_logo.png';
+import Profile from '../profile';
 
 export default function Tabs() {
     const [pageIndex, setpageIndex] = React.useState(0)
@@ -47,8 +48,8 @@ export default function Tabs() {
                 </div>
                 <div class={`${selectedTab[menuOpen]}`}>
                     
-                    <span class ={pageIndex===0 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(0)}>Job Search</span>
-                    <div class ={pageIndex===1 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`}onClick={() => handleTabClick(1)}>Profile</div>
+                    <span class ={pageIndex===0 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(0)}>Profile</span>
+                    <div class ={pageIndex===1 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`}onClick={() => handleTabClick(1)}>Job Search</div>
                     <div class ={pageIndex===2 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(2)}>Career advice</div>
                     <div class ={pageIndex===3 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(3)}>Explore companies</div>
                 </div>
@@ -61,9 +62,9 @@ export default function Tabs() {
                 
             </div>
             <div class = {pageIndex===0 ? 'block':'hidden'}>
-                <JobSearch/>
+                <Profile/>
             </div>
-            <div class = {pageIndex===1 ? 'block':'hidden'} >Hello</div>
+            <div class = {pageIndex===1 ? 'block':'hidden'} ><JobSearch/></div>
             <div class = {pageIndex===2 ? 'block':'hidden'}>Hello</div>
             
         

@@ -9,7 +9,7 @@ import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
 
 
-function SearchBanner({setJobs, setInsights}) {
+function SearchBanner({setJobs, setInsights, parameters}) {
     const [selectedIndex, setSelectedIndex] = React.useState(0);
     const options = [
         "Any Classification",
@@ -47,8 +47,9 @@ function SearchBanner({setJobs, setInsights}) {
     function handleSubmit(e) {
             var job_ids;
             e.preventDefault();
+            var insightList = Array();
 
-            fetch('/flask/job_page',{
+            fetch('/job_page',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -63,9 +64,8 @@ function SearchBanner({setJobs, setInsights}) {
                 console.log(setJobs(data.data))
 
             });  
-
-
-            fetch('/flask/job_ids',{
+            setInsights("Loading")
+            fetch('/job_ids',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -82,14 +82,15 @@ function SearchBanner({setJobs, setInsights}) {
 
                       
 
-            fetch('/flask/job_insights',{
+            fetch('/job_insights',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    job_ids: job_ids
+                    job_ids: job_ids,
+                    parameters: parameters
                 })
             }).then(res => res.json()).then(data => {
                 setInsights(data)
@@ -139,7 +140,9 @@ function SearchBanner({setJobs, setInsights}) {
 }
 
 function DetailedJobCard({detailedJob}) {
-    
+    const handleJobClick = (index) => {
+            window.open("https://www.seek.com.au/job/"+detailedJob.data.id,'_blank')
+      };
     
     if (detailedJob) {
         var Logo = null;
@@ -156,8 +159,12 @@ function DetailedJobCard({detailedJob}) {
 
         return (
             <div class="w-full ml-5 mr-5">
-                <div class="hidden md:block h-screen overflow-auto sticky top-0 right-0 flex flex-col p-4 w-full rounded-lg bg-white ring-2 ring-grey hover:cursor-pointer">
+                <div class="hidden md:block h-screen overflow-auto sticky top-0 right-0 flex flex-col p-4 w-full rounded-lg bg-white ring-2 ring-grey">
                 <div class="ml-5 flex flex-col space-y-5">
+                    <div class="relative">
+                        <div class="hidden md:block underline  rounded-lg absolute right-0 hover:cursor-pointer" onClick={handleJobClick}>Visit Job Page&#128279;</div>
+                    </div>
+                    
                 <div>
                     <div>{Logo}</div>
                     <div class="font-bold">{detailedJob.data.title}</div>
@@ -195,8 +202,16 @@ function DetailedJobCard({detailedJob}) {
 
 function JobCard({job, setDetailedJob}) {
 
+    
+
+
     const handleJobClick = (index) => {
-        fetch('/flask/detailed_job',{
+        var x = window.matchMedia("(max-width: 1024px)")
+        if (x.matches) {
+            /*link to seek website*/
+            window.open("https://www.seek.com.au/job/"+job.id,'_blank')
+        } else {
+            fetch('/detailed_job',{
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -207,8 +222,8 @@ function JobCard({job, setDetailedJob}) {
                 })
             }).then(res => res.json()).then(data => {
                 setDetailedJob(data)
-            });   
-       
+            }); 
+        }
       };
     var Logo = null
     if (job.branding) {
@@ -277,34 +292,103 @@ function ProgressBar({progress}) {
 }
 
 
+function AddInsightParameter({setInsights}) {
 
-function InsightCard({insights}) {
-    var listItems = null
+    return (
+        <div class="p-5 ml-5 ">
+        <div class ="rounded-full h-14 w-14 border-solid border-2 grid place-content-center hover:cursor-pointer">
+            <div>+</div>
+        </div>
 
-    if (insights){
-        Object.keys(insights).forEach(function(key, index) {
-            if (listItems){
-                listItems.push(<li class=""><p class="text-xl">{key}</p><ProgressBar progress={insights[key]/insights['total']} /><p class="italic text-center"> {insights[key]}/{insights['total']}</p></li>)
-            } else {
-                listItems = [<li class=""><p class="text-xl">{key}</p><ProgressBar progress={insights[key]/insights['total']} /><p class="italic text-center"> {insights[key]}/{insights['total']}</p></li>]
-            }
-            
-        });
-        
-    }
-    if (insights) {return (
-        <div class = "relative w-full md:w-1/2">
-            <ul class="p-5 ml-5 mr-5 md:h-screen md:overflow-auto sticky top-0">
-                <li class="text-2xl mb-5">We found the following insights!</li>
-                {listItems}
-                </ul>
         </div>
         
-      
-    )} else {
+    )
+}
+
+
+function Comments({newCommentId, text, setText}) {
+    
+    const handleChange = (value) => {
+            // 1. Make a shallow copy of the items
+        let items = [...text];
+        // 2. Make a shallow copy of the item you want to mutate
+        let item = {...items[newCommentId.id]};
+        // 3. Replace the property you're intested in
+        item = value;
+        // 4. Put it back into our array. N.B. we *are* mutating the array here, 
+        //    but that's why we made a copy first
+        items[newCommentId.id] = item;
+        // 5. Set the state to our new copy
+        setText(items);
+    };
+    
+    return (
+        <li><input id={newCommentId} value={text[newCommentId.id]} onInput={(e) => handleChange(e.target.value)}></input></li>
+    )
+}
+
+
+function InsightCard({insights, setJobs,parameters, setParameters, text, setText}) {
+    var listItems = Array();
+    
+    
+    const handleAddparam = () => {
+        const newCommentId = parameters.length === 0 ? 0 : parameters.at(-1).id + 1;
+        setParameters((prev) => [...prev, {id:newCommentId}])
+    }
+
+
+    if (insights === "Loading") { return(
+        <div class = "grid place-content-center w-full md:w-1/2 md:sticky top-0  md:h-48">
+        <div class=" h-32 w-32 animate-spin rounded-full border-4 border-solid border-pink border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite]"
+        role="status">
+        
+        </div>
+        <div class="mt-5">Gathering Insights</div>
+        <div class="mt-2">This might take several minutes</div>
+    </div>
+
+    )
+        
+    } else {    
+        var insight_header = "We found the following insights!"
+        if (insights){
+
+            Object.keys(insights).forEach(function(key, index) {
+                listItems.push(
+                <li class="">
+                    <div class="flex space-x-4">
+                        <p class="text-xl " onClick={() => console.log(setJobs(insights[key][1]))}>{key} </p>
+                        <div class= "hover:cursor-pointer"onClick={() => console.log(setJobs(insights[key][1]))}>View Jobs!</div>
+                    </div>
+                    
+                    <ProgressBar progress={insights[key][0]/insights['total']} />
+                    <p class="italic text-center"> {insights[key][0]}/{insights['total']}</p>
+                    </li>
+                    )
+               
+            });
+        } else {
+            insight_header = "Add insights to search for!"
+        }
+        
         return (
-            <div class = "relative w-full"></div>
+            <div class = "relative w-full md:h-screen md:w-1/2">
+                <ul class="p-5 ml-5 mr-5  md:overflow-auto sticky top-0">
+                    <li class="text-2xl mb-5">{insight_header}</li>
+                    {listItems}
+                    {parameters.map((parameter) => (
+                        <Comments newCommentId={parameter} text={text} setText={setText}/>
+                    ))}
+                    </ul>
+                    <div onClick={handleAddparam}><AddInsightParameter/></div>
+                    
+            </div>
+            
+          
         )
+
+        
     };
 }
    
@@ -313,17 +397,19 @@ export default function JobSearch() {
     const [myjobs, setJobs] = useState(null);
     const [insights, setInsights] = useState(null);
     const [detailedJob, setDetailedJob] = useState(null);
+    const [parameters, setParameters] = useState(Array());
+    const [text, setText] = useState(Array());
     return (
         <div class="z-0">
         
             <Box height={20}></Box>
         
-            <SearchBanner setJobs={setJobs} setInsights={setInsights}/>
+            <SearchBanner setJobs={setJobs} setInsights={setInsights} parameters={text}/>
           
             
             <Box height={20}></Box>
             <div class = "flex flex-col md:flex md:flex-row">
-            <InsightCard insights={insights}/>
+            <InsightCard insights={insights} setJobs={setJobs} parameters={parameters} setParameters={setParameters} text={text} setText={setText}/>
             <JobCards myjobs={myjobs} setDetailedJob={setDetailedJob}/>
             <DetailedJobCard detailedJob={detailedJob}/>
             </div>
