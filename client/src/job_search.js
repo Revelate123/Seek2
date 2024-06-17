@@ -292,20 +292,6 @@ function ProgressBar({progress}) {
 }
 
 
-function AddInsightParameter({setInsights}) {
-
-    return (
-        <div class="p-5 ml-5 ">
-        <div class ="rounded-full h-14 w-14 border-solid border-2 grid place-content-center hover:cursor-pointer">
-            <div>+</div>
-        </div>
-
-        </div>
-        
-    )
-}
-
-
 function Comments({newCommentId, text, setText}) {
     
     const handleChange = (value) => {
@@ -323,7 +309,7 @@ function Comments({newCommentId, text, setText}) {
     };
     
     return (
-        <li><input id={newCommentId} value={text[newCommentId.id]} onInput={(e) => handleChange(e.target.value)}></input></li>
+        <li><input class="text-xl w-full border-b-2 mb-2 border-pink" id={newCommentId} value={text[newCommentId.id]} onInput={(e) => handleChange(e.target.value)}></input></li>
     )
 }
 
@@ -332,11 +318,18 @@ function InsightCard({insights, setJobs,parameters, setParameters, text, setText
     var listItems = Array();
     
     
-    const handleAddparam = () => {
+
+    const handleAddParam = () => {
         const newCommentId = parameters.length === 0 ? 0 : parameters.at(-1).id + 1;
         setParameters((prev) => [...prev, {id:newCommentId}])
-    }
+    };
 
+    const handleRemoveParam = () => {
+        setParameters(parameters.slice(0,-1));
+    };
+    useEffect(() => {
+        console.log(parameters)
+    }, [parameters]);
 
     if (insights === "Loading") { return(
         <div class = "grid place-content-center w-full md:w-1/2 md:sticky top-0  md:h-48">
@@ -350,38 +343,49 @@ function InsightCard({insights, setJobs,parameters, setParameters, text, setText
 
     )
         
-    } else {    
-        var insight_header = "We found the following insights!"
-        if (insights){
-
-            Object.keys(insights).forEach(function(key, index) {
-                listItems.push(
-                <li class="">
-                    <div class="flex space-x-4">
-                        <p class="text-xl " onClick={() => console.log(setJobs(insights[key][1]))}>{key} </p>
-                        <div class= "hover:cursor-pointer"onClick={() => console.log(setJobs(insights[key][1]))}>View Jobs!</div>
-                    </div>
-                    
-                    <ProgressBar progress={insights[key][0]/insights['total']} />
-                    <p class="italic text-center"> {insights[key][0]}/{insights['total']}</p>
-                    </li>
-                    )
-               
-            });
-        } else {
-            insight_header = "Add insights to search for!"
+    } else { 
+        var insight_header = "Add insights to search for!"  
+        if (insights) {
+            insight_header = "We found the following insights!"
         }
-        
+        var test_list = Array();
+        test_list = parameters?.map((parameter) => {
+            if (insights && insights[text[parameter.id]]) { return(
+                <div>
+                    <div class = "flex">
+                        <div class = "w-3/5">
+                            <Comments newCommentId={parameter} text={text} setText={setText}/>
+                        </div>
+                    
+                    <div class= "hover:cursor-pointer"onClick={() => console.log(setJobs(insights[text[parameter.id]][1]))}>View Jobs!</div>
+                    </div>
+                
+                
+                    <ProgressBar progress={insights[text[parameter.id]][0]/insights['total']} />
+                    <p class="italic text-center"> {insights[text[parameter.id]][0]}/{insights['total']}</p>
+            </div>
+            )
+                
+            } else { return (
+                <Comments newCommentId={parameter} text={text} setText={setText}/>
+            )}
+        });
         return (
-            <div class = "relative w-full md:h-screen md:w-1/2">
-                <ul class="p-5 ml-5 mr-5  md:overflow-auto sticky top-0">
+            <div class = "relative w-full md:h-screen md:w-1/2 md:sticky top-0">
+                <ul class="p-5 ml-5 mr-5  md:overflow-auto ">
                     <li class="text-2xl mb-5">{insight_header}</li>
-                    {listItems}
-                    {parameters.map((parameter) => (
-                        <Comments newCommentId={parameter} text={text} setText={setText}/>
-                    ))}
+                    {test_list}
                     </ul>
-                    <div onClick={handleAddparam}><AddInsightParameter/></div>
+                    <div class="p-5 ml-5 ">
+                    <div class ="rounded-full h-14 w-14 border-solid border-2 grid place-content-center hover:cursor-pointer" onClick={handleAddParam}>
+                        <div>+</div>
+                    </div>
+                    </div>
+                    <div class="p-5 ml-5 ">
+                    <div class ="rounded-full h-14 w-14 border-solid border-2 grid place-content-center hover:cursor-pointer" onClick={handleRemoveParam}>
+                        <div>-</div>
+                    </div>
+                    </div>
                     
             </div>
             
