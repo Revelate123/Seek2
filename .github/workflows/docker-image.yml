@@ -32,7 +32,6 @@ jobs:
           context: ./client
           platforms: linux/amd64,linux/arm64
           push: true
-          target: final
           tags: ${{ secrets.DOCKER_USERNAME }}/client:latest
       -
         name: Build and push
@@ -41,7 +40,6 @@ jobs:
           context: ./api
           platforms: linux/amd64,linux/arm64
           push: true
-          target: final
           tags: ${{ secrets.DOCKER_USERNAME }}/flask:latest
       -
         name: Generate deployment package
