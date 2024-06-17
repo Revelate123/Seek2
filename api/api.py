@@ -18,7 +18,7 @@ import re
 import logging
 
 def create_app():
-    MONGO = "localhost"
+    MONGO = "mongodb"
 
 
     app = Flask(__name__)
