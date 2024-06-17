@@ -1,18 +1,14 @@
 version: '3'
 services:
   app:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
+    image: revelate123/client
     ports:
       - 80:80
     container_name: app
     links:
       - flask
   flask:
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+    image: revelate123/flask
     container_name: flask
     links:
       - mongodb
