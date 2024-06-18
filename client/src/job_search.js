@@ -211,6 +211,7 @@ function JobCard({job, setDetailedJob}) {
             /*link to seek website*/
             window.open("https://www.seek.com.au/job/"+job.id,'_blank')
         } else {
+            
             fetch('/flask/detailed_job',{
                 method: 'POST',
                 headers: {
