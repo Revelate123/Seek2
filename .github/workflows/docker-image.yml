@@ -64,7 +64,7 @@ jobs:
           run: |
             aws elasticbeanstalk create-application-version \
             --application-name seek2 \
-            --source-bundle S3Bucket="s3://elasticbeanstalk-ap-southeast-2-058264415051/seek2/", S3Key="deploy.zip" \
+            --source-bundle S3Bucket="s3://elasticbeanstalk-ap-southeast-2-058264415051/seek2/deploy.zip" \
             --version-label "ver-${{ github.sha }}" \
             --description "commit-sha-${{ github.sha }}"
 
