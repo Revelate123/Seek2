@@ -23,7 +23,7 @@ def create_app():
 
     app = Flask(__name__)
 
-    @app.route('/job_ids', methods = ['POST'])
+    @app.route('/flask/job_ids', methods = ['POST'])
     def get_job_ids():
         keywords = request.json["keywords"]
         if keywords:
@@ -55,7 +55,7 @@ def create_app():
 
 
 
-    @app.route('/job_page', methods = ['POST'])
+    @app.route('/flask/job_page', methods = ['POST'])
     def get_job_page():
         keywords = request.json["keywords"]
         if keywords:
@@ -85,18 +85,11 @@ def create_app():
         #return {"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}
         return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true" + keywords + location + classification+"&page=1").text)
 
-    @app.route('/select_insight_jobs', methods = ["POST"])
-    def select_insight_jobs():
-        request.json['job_ids']
-        client = pymongo.MongoClient("mongodb://"+ MONGO +":27017/")
-        db = client["mydatabase"]
-        collection = db["jobsummary"]
 
 
 
 
-
-    @app.route('/job_insights', methods = ['POST'])
+    @app.route('/flask/job_insights', methods = ['POST'])
     def get_current_jobs():
         job_ids = request.json['job_ids']
         parameters = request.json['parameters']
@@ -130,7 +123,7 @@ def create_app():
         return answers
 
 
-    @app.route('/detailed_job', methods = ['POST'])
+    @app.route('/flask/detailed_job', methods = ['POST'])
     def get_detailed_job():
         job_id = request.json['job_id']
         client = pymongo.MongoClient("mongodb://"+ MONGO +":27017/")

@@ -88,7 +88,7 @@ export default function Profile() {
             </div>
             <div class="relative">
                 
-                    <img class = "absolute right-[22%] w-[10%]  shrink object-contain"src={TreeTrunk} alt="Tree Base"></img>
+                    <img class = "absolute right-[2%] w-[10%]  shrink object-contain"src={TreeTrunk} alt="Tree Base"></img>
             
                 <img class="absolute right-[20%] bottom-0 object-contain" src={TreeBranch} alt="Tree Base"></img>
                 <img class=" shrink  object-contain -translate-y-[21%]"src={TreeLeaf}></img>

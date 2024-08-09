@@ -3,6 +3,7 @@ import JobSearch from '../job_search';
 import '../output.css';
 import Logo from './seek_logo.png';
 import Profile from '../profile';
+import Canvas from './parallax.js';
 
 export default function Tabs() {
     const [pageIndex, setpageIndex] = React.useState(0)
@@ -62,7 +63,7 @@ export default function Tabs() {
                 
             </div>
             <div class = {pageIndex===0 ? 'block':'hidden'}>
-                <Profile/>
+                <Canvas/>
             </div>
             <div class = {pageIndex===1 ? 'block':'hidden'} ><JobSearch/></div>
             <div class = {pageIndex===2 ? 'block':'hidden'}>Hello</div>
