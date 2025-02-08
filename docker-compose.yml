@@ -3,7 +3,7 @@ services:
   app:
     build: ./client
     ports:
-      - 80:80
+      - 2080:80
     hostname: app
     links:
       - flask
