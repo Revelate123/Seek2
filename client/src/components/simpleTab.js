@@ -51,8 +51,8 @@ export default function Tabs() {
                     
                     <span class ={pageIndex===0 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(0)}>Profile</span>
                     <div class ={pageIndex===1 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`}onClick={() => handleTabClick(1)}>Job Search</div>
-                    <div class ={pageIndex===2 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(2)}>Career advice</div>
-                    <div class ={pageIndex===3 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(3)}>Explore companies</div>
+                    <div class ={pageIndex===2 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(2)}>About me</div>
+                    <div class ={pageIndex===3 ? `${selectedTab['selected']}`:`${selectedTab['notselected']}`} onClick={() => handleTabClick(3)}>Blog</div>
                 </div>
                 
    
@@ -63,7 +63,7 @@ export default function Tabs() {
                 
             </div>
             <div class = {pageIndex===0 ? 'block':'hidden'}>
-                <Canvas/>
+                
             </div>
             <div class = {pageIndex===1 ? 'block':'hidden'} ><JobSearch/></div>
             <div class = {pageIndex===2 ? 'block':'hidden'}>Hello</div>

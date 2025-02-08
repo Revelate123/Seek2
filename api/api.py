@@ -47,7 +47,7 @@ def create_app():
             location = "&where=" + str(request.json["location"]).replace(" ","+")
         else:
             location =""
-        job_ids = start_scrape_job_ids("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true" + keywords + location + classification+"&page=")
+        job_ids = start_scrape_job_ids("https://www.seek.com.au/api/jobsearch/v5/search?seekSelectAllPages=true" + keywords + location + classification+"&page=")
         return job_ids
 
 
@@ -83,7 +83,7 @@ def create_app():
         #answers["data"] = [{"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}]
         #return "test if this worked"
         #return {"title":"google","advertiser":{"description":"howdy"},"location":"home","salary":"100","teaser":"nothing"}
-        return json.loads(requests.get("https://www.seek.com.au/api/chalice-search/v4/search?seekSelectAllPages=true" + keywords + location + classification+"&page=1").text)
+        return json.loads(requests.get("https://www.seek.com.au/api/jobsearch/v5/search?seekSelectAllPages=true" + keywords + location + classification+"&page=1").text)
 
 
 
@@ -244,7 +244,7 @@ def create_app():
         return job_ids[0]
 
 
-    #app.run(debug=True)
+    #app.run(debug=True,port=1234)
     return app
 
 your_app = create_app()

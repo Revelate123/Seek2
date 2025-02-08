@@ -61,7 +61,7 @@ function SearchBanner({setJobs, setInsights, parameters}) {
                     location: e.target.location.value,
                 })
             }).then(res => res.json()).then(data => {
-                console.log(setJobs(data.data))
+                setJobs(data.data)
 
             });  
             setInsights("Loading")
@@ -139,126 +139,119 @@ function SearchBanner({setJobs, setInsights, parameters}) {
     );
 }
 
-function DetailedJobCard({detailedJob}) {
-    const handleJobClick = (index) => {
-            window.open("https://www.seek.com.au/job/"+detailedJob.data.id,'_blank')
-      };
-    
-    if (detailedJob) {
-        var Logo = null;
-        if (detailedJob.data.branding) {
-            Logo =  <img src={detailedJob.data.branding.assets.logo.strategies.jdpLogo} width="140px" class="p-4"/>
-        } 
+function DetailedJobCard({ detailedJob }) {
+    const handleJobClick = () => {
+        if (detailedJob?.data?.id) {
+            window.open(`https://www.seek.com.au/job/${detailedJob.data.id}`, '_blank');
+        }
+    };
 
-        const htmlFrom = (htmlString) => {
-            const cleanHtmlString = DOMPurify.sanitize(htmlString,
-              { USE_PROFILES: { html: true } });
-            const html = parse(cleanHtmlString);
-            return html;
+    if (!detailedJob || !detailedJob.data) {
+        return <div className="flex flex-col h-1/2 p-4 w-full rounded-lg bg-white"></div>;
     }
 
-        return (
-            <div class="w-full ml-5 mr-5">
-                <div class="hidden md:block h-screen overflow-auto sticky top-0 right-0 flex flex-col p-4 w-full rounded-lg bg-white ring-2 ring-grey">
-                <div class="ml-5 flex flex-col space-y-5">
-                    <div class="relative">
-                        <div class="hidden md:block underline  rounded-lg absolute right-0 hover:cursor-pointer" onClick={handleJobClick}>Visit Job Page&#128279;</div>
+    // Safely retrieve logo
+    const Logo = detailedJob.data.branding?.serpLogoUrl ? (
+        <img 
+            src={detailedJob.data.branding.serpLogoUrl} 
+            width="140px" 
+            className="p-4" 
+            alt="Company Logo"
+        />
+    ) : null;
+
+    // Function to safely parse and sanitize HTML content
+    const htmlFrom = (htmlString) => {
+        const cleanHtmlString = DOMPurify.sanitize(htmlString, { USE_PROFILES: { html: true } });
+        return parse(cleanHtmlString);
+    };
+
+    return (
+        <div className="w-full ml-5 mr-5">
+            <div className="hidden md:block h-screen overflow-auto sticky top-0 right-0 flex flex-col p-4 w-full rounded-lg bg-white ring-2 ring-grey">
+                <div className="ml-5 flex flex-col space-y-5">
+                    {/* Visit Job Page Link */}
+                    <div className="relative">
+                        <div 
+                            className="hidden md:block underline rounded-lg absolute right-0 hover:cursor-pointer" 
+                            onClick={handleJobClick}
+                        >
+                            Visit Job Page 🔗
+                        </div>
                     </div>
-                    
-                <div>
-                    <div>{Logo}</div>
-                    <div class="font-bold">{detailedJob.data.title}</div>
-                    <div>{detailedJob.data.advertiser.description}</div>
+
+                    {/* Job Information */}
+                    <div>
+                        {Logo}
+                        <div className="font-bold">{detailedJob.data.title}</div>
+                        <div>{detailedJob.data.advertiser?.description}</div>
+                    </div>
+
+                    <div>
+                        <div>{detailedJob.data.location}</div>
+                        <div>{detailedJob.data.salary}</div>
+                    </div>
+
+                    <div>{detailedJob.data.teaser}</div>
                 </div>
-                
-                <div>
-                    <div>{detailedJob.data.location}</div>
-                    <div>{detailedJob.data.salary}</div>
-                    
-                </div>
-                
-                <div>{detailedJob.data.teaser}</div>
-            </div>
+
+                {/* Job Page Content */}
                 <div>{htmlFrom(detailedJob.data.jobPage)}</div>
-                
-    
             </div>
-
-            </div>
-            
-        );
-    } else {
-        return (
-            <div class="flex flex-col h-1/2 p-4 w-full rounded-lg bg-white">
-                    
-    
-            </div>
-        );
-    }
-
+        </div>
+    );
 }
 
 
-
-function JobCard({job, setDetailedJob}) {
-
-    
-
-
-    const handleJobClick = (index) => {
-        var x = window.matchMedia("(max-width: 1024px)")
+function JobCard({ job, setDetailedJob }) {
+    const handleJobClick = () => {
+        const x = window.matchMedia("(max-width: 1024px)");
         if (x.matches) {
-            /*link to seek website*/
-            window.open("https://www.seek.com.au/job/"+job.id,'_blank')
+            window.open(`https://www.seek.com.au/job/${job.id}`, '_blank');
         } else {
-            
-            fetch('/flask/detailed_job',{
+            fetch('/flask/detailed_job', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    job_id: job.id
-                })
-            }).then(res => res.json()).then(data => {
-                setDetailedJob(data)
-            }); 
+                body: JSON.stringify({ job_id: job.id })
+            })
+            .then(res => res.json())
+            .then(data => setDetailedJob(data));
         }
-      };
-    var Logo = null
-    if (job.branding) {
-        Logo =  <img src={job.branding.assets.logo.strategies.jdpLogo} width="140px" class="p-4"/>
-        
     };
-    if (job.bulletPoints){
-        var bulletItems = job.bulletPoints.map((bullet) =>
-            <li>{bullet}</li>
-        );
-    } else {
-        var bulletItems = [null]
-    };
+
+    const Logo = job.branding?.serpLogoUrl? (
+        <img src={job.branding.serpLogoUrl} width="140px" className="p-4" alt="Company Logo"/>
+    ) : null;
+
+    const bulletItems = job.bulletPoints?.length > 0 
+        ? job.bulletPoints.map((bullet, index) => <li key={index}>{bullet}</li>) 
+        : null;
+
     return (
-        <div class="flex flex-col h-1/2 p-4 rounded-lg bg-white ring-2 ring-grey hover:ring-2 hover:ring-seekblue focus:ring-8 focus:ring-[#7facf5] hover:cursor-pointer" onClick={handleJobClick}>
-            <div class="ml-5 flex flex-col space-y-5">
+        <div 
+            className="flex flex-col h-1/2 p-4 rounded-lg bg-white ring-2 ring-grey hover:ring-2 hover:ring-seekblue focus:ring-8 focus:ring-[#7facf5] hover:cursor-pointer" 
+            onClick={handleJobClick}
+        >
+            <div className="ml-5 flex flex-col space-y-5">
                 <div>
-                    <div>{Logo}</div>
-                    <div class="font-bold">{job.title}</div>
-                    <div>{job.advertiser.description}</div>
+                    {Logo}
+                    <div className="font-bold">{job.title}</div>
+                    <div>{job.advertiser?.description}</div>
                 </div>
-                
                 <div>
                     <div>{job.location}</div>
                     <div>{job.salary}</div>
-                    
                 </div>
-                
-                <ul class='list-disc'>{bulletItems}</ul>
+                {bulletItems && <ul className="list-disc">{bulletItems}</ul>}
                 <div>{job.teaser}</div>
             </div>
-            </div>
+        </div>
     );
 }
+
 
 
 
